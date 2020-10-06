@@ -1,4 +1,4 @@
-package pack2020;
+package pack2020.thread;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Collection;
