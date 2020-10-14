@@ -3,6 +3,12 @@ package pack2020.thread;
 import java.util.concurrent.atomic.AtomicInteger;
 
 /*
+atomic operation mean that the operation can't be partially executed, all instructions are guarantee to be executed without interruption
+In java only read and write operation in variable are atomique except long and double.
+i++ is not atomic because it require three operation:
+  - read value from memory.
+  - increment it.
+  - write new value in memory
 difference between i++ and AtomicInteger.incrementAndGet() :
 1/ i++ need 3 opération :
  - get value
@@ -65,5 +71,45 @@ public class ThreadCounterProblem {
         public int getAtom() {
             return atom.get();
         }
+    }
+
+
+
+     static class AnotherImplCounterProblem {
+        public static void main(String[] args) throws InterruptedException {
+            final MonCompteur compteur = new MonCompteur();
+            Thread[] threads = new Thread[20];
+            Runnable thread = new Runnable() {
+                @Override
+                public void run() {
+                    for (int i = 0; i < 10000; i++) {
+                        compteur.getNextValue();
+                    }
+                }
+            };
+
+            for (int i = 0; i < 20; i++) {
+                threads[i] = new Thread(thread);
+                threads[i].start();
+            }
+
+            for (int i = 0; i < 20; i++) {
+                threads[i].join();
+            }
+
+            System.out.println(compteur.getValue());
+        }
+
+         static class MonCompteur {
+             private int valeur;
+
+             public int getValue() {
+                 return valeur;
+             }
+
+             public int getNextValue() {
+                 return ++valeur;
+             }
+         }
     }
 }
